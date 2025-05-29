@@ -1,9 +1,10 @@
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt"   
 import sendOtp from "../services/sendOtp.js"
 import User from "../models/User.model.js"
-import signupValidator from "../validation/signup.validator.js"
-import { Op } from "sequelize"
+import {signupValidator} from "../validation/auth.validator.js"
 import generateOtp from "../utils/generateOtp.js"
+
+const otpDuration = 10
 
 const signupController = async (req, res) => {
 
@@ -34,7 +35,7 @@ const signupController = async (req, res) => {
 
         // Generate OTP 
         const otp = generateOtp()
-        const otpExpires = new Date(Date.now() + 10 * 60 * 1000) //10 minutes
+        const otpExpires = new Date(Date.now() + otpDuration * 60 * 1000) //10 minutes
 
 
         //Create User with payload provided
@@ -53,6 +54,7 @@ const signupController = async (req, res) => {
 
 
     } catch (error) {
+        console.log(error)
         res.status(500).send({ message: "Server error" })
 
     }
